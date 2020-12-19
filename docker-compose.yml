@@ -1,0 +1,34 @@
+version: '2.2'
+services:
+    elasticsearch:
+        image: budney/elasticsearch
+        container_name: elasticsearch
+        restart: unless-stopped
+        environment:
+            - node.name=elasticsearch
+            - cluster.name=elasticsearch
+            - discovery.type=single-node
+            - network.host=0.0.0.0
+            - path.logs=/var/log/elasticsearch
+            - path.data=/var/share/elasticsearch/data
+            - bootstrap.system_call_filter=false
+            - bootstrap.memory_lock=true
+            - xpack.ml.enabled=false
+            - xpack.ilm.enabled=false
+            # Memory limits
+            - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+            - indices.breaker.total.use_real_memory=true
+            - indices.breaker.total.limit=95%
+            - indices.breaker.request.limit=75%
+            - indices.breaker.request.overhead=1
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        volumes:
+            - /var/share/elasticsearch/log:/var/log/elasticsearch
+            - /var/share/elasticsearch/data:/var/share/elasticsearch/data
+            #- /var/share/elasticsearch/data:/data
+        ports:
+            - 9200:9200
+            - 9300:9300

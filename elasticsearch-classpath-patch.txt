@@ -1,0 +1,67 @@
+diff -dubBw bin.orig/elasticsearch-cli bin/elasticsearch-cli
+--- bin.orig/elasticsearch-cli	2020-01-15 12:20:56.000000000 +0000
++++ bin/elasticsearch-cli	2020-03-08 19:56:05.713510960 +0000
+@@ -13,7 +13,10 @@
+ IFS=';' read -r -a additional_classpath_directories <<< "$ES_ADDITIONAL_CLASSPATH_DIRECTORIES"
+ for additional_classpath_directory in "${additional_classpath_directories[@]}"
+ do
+-  ES_CLASSPATH="$ES_CLASSPATH:$ES_HOME/$additional_classpath_directory/*"
++  # Workaround for openjdk bug
++  ADDL=$( ls $ES_HOME/$additional_classpath_directory/* | egrep -i '\.jar$' | tr \\n \: )
++
++  ES_CLASSPATH="$ES_CLASSPATH:$ADDL"
+ done
+ 
+ # use a small heap size for the CLI tools, and thus the serial collector to
+diff -dubBw bin.orig/elasticsearch-env bin/elasticsearch-env
+--- bin.orig/elasticsearch-env	2020-01-15 12:20:56.000000000 +0000
++++ bin/elasticsearch-env	2020-03-08 19:54:40.284160333 +0000
+@@ -33,7 +33,8 @@
+ ES_HOME=`dirname "$ES_HOME"`
+ 
+ # now set the classpath
+-ES_CLASSPATH="$ES_HOME/lib/*"
++# Workaround for openjdk bug
++ES_CLASSPATH=$( ls $ES_HOME/lib/* | egrep -i '\.jar$' | tr \\n \: )
+ 
+ # now set the path to java
+ if [ ! -z "$JAVA_HOME" ]; then
+diff -dubBw bin.orig/x-pack-env bin/x-pack-env
+--- bin.orig/x-pack-env	2020-01-15 12:20:56.000000000 +0000
++++ bin/x-pack-env	2020-03-08 19:56:23.473375840 +0000
+@@ -4,5 +4,8 @@
+ # or more contributor license agreements. Licensed under the Elastic License;
+ # you may not use this file except in compliance with the Elastic License.
+ 
++# Workaround for openjdk bug
++X_PACK_CORE=$( ls $ES_HOME/modules/x-pack-core/* | egrep -i '\.jar$' | tr \\n \: )
++
+ # include x-pack-core jars in classpath
+-ES_CLASSPATH="$ES_CLASSPATH:$ES_HOME/modules/x-pack-core/*"
++ES_CLASSPATH="$ES_CLASSPATH:$X_PACK_CORE"
+diff -dubBw bin.orig/x-pack-security-env bin/x-pack-security-env
+--- bin.orig/x-pack-security-env	2020-01-15 12:20:57.000000000 +0000
++++ bin/x-pack-security-env	2020-03-08 19:56:11.343468131 +0000
+@@ -4,5 +4,8 @@
+ # or more contributor license agreements. Licensed under the Elastic License;
+ # you may not use this file except in compliance with the Elastic License.
+ 
++# Workaround for openjdk bug
++X_PACK_SECURITY=$( ls $ES_HOME/modules/x-pack-security/* | egrep -i '\.jar$' | tr \\n \: )
++
+ # include x-pack-security jars in classpath
+-ES_CLASSPATH="$ES_CLASSPATH:$ES_HOME/modules/x-pack-security/*"
++ES_CLASSPATH="$ES_CLASSPATH:$X_PACK_SECURITY"
+diff -dubBw bin.orig/x-pack-watcher-env bin/x-pack-watcher-env
+--- bin.orig/x-pack-watcher-env	2020-01-15 12:20:56.000000000 +0000
++++ bin/x-pack-watcher-env	2020-03-08 19:56:16.223431004 +0000
+@@ -4,5 +4,8 @@
+ # or more contributor license agreements. Licensed under the Elastic License;
+ # you may not use this file except in compliance with the Elastic License.
+ 
++# Workaround for openjdk bug
++X_PACK_WATCHER=$( ls $ES_HOME/modules/x-pack-watcher/* | egrep -i '\.jar$' | tr \\n \: )
++
+ # include x-pack-security jars in classpath
+-ES_CLASSPATH="$ES_CLASSPATH:$ES_HOME/modules/x-pack-watcher/*"
++ES_CLASSPATH="$ES_CLASSPATH:$X_PACK_WATCHER"
