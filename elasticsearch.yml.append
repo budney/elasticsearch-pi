@@ -1,0 +1,8 @@
+
+# Expose the service outside this container. That's why we exist
+network.host: 0.0.0.0
+
+# Turn off stuff that doesn't work on raspberry pi
+xpack.ml.enabled: false
+xpack.ilm.enabled: false
+bootstrap.system_call_filter: false

@@ -8,7 +8,7 @@ WORKDIR /tmp
 
 # Copy the enytrypoint script over
 COPY entrypoint.sh /
-COPY elasticsearch-classpath-patch.txt .
+COPY elasticsearch-classpath-patch.txt elasticsearch.yml.append ./
 
 # Intall utilities
 RUN \
@@ -32,12 +32,15 @@ RUN \
     ( cd /usr/share/elasticsearch; patch -p0 < /tmp/elasticsearch-classpath-patch.txt; ) && \
     cp jna-5.5.0.jar /usr/share/elasticsearch/lib/ && \
     sed --in-place -e '/^9/s/^/#/' /etc/elasticsearch/jvm.options && \
+    cat elasticsearch.yml.append >> /etc/elasticsearch/elasticsearch.yml && \
     mkdir -p /var/share/elasticsearch/data && \
     chown -R elasticsearch /etc/default/elasticsearch /etc/elasticsearch /var/share/elasticsearch
 
-# Clean up!
+# Clean up! Remove stuff we used for the build, and some packages we can survive without
 RUN \
-    apt purge -y --autoremove wget apt-transport-https gnupg patch && \
+    apt purge -y --autoremove wget apt-transport-https gnupg patch \
+        iproute2 libelf1 dbus krb5-locales libapparmor1 libxtables12 \
+        iputils-ping libcap2-bin libcap2 libmnl0 && \
     apt clean
 
 

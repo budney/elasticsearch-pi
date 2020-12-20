@@ -1,7 +1,7 @@
 version: '2.2'
 services:
     elasticsearch:
-        image: budney/elasticsearch
+        image: budney/elasticsearch-pi
         container_name: elasticsearch
         restart: unless-stopped
         environment:
