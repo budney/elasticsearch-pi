@@ -23,8 +23,8 @@ RUN \
 
 # Install and patch elasticsearch
 RUN \
-    addgroup --system --gid 1000 elasticsearch && \
-    adduser --system --no-create-home --home / --shell /bin/true --uid 1000 --disabled-password elasticsearch && \
+    addgroup --system --gid 1001 elasticsearch && \
+    adduser --system --no-create-home --home / --shell /bin/true --uid 1001 --disabled-password elasticsearch && \
     ( dpkg -i --force-all --ignore-depends=libc6 elasticsearch*.deb || /bin/true ) && \
     sed -i -e '/^Depends:.*libc6,/s/libc6, //' /var/lib/dpkg/status && \
     ln -s $(dirname $(dirname $(readlink -f $(which java)))) /usr/share/elasticsearch/jdk && \
