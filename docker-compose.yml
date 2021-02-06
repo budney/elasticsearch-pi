@@ -28,7 +28,6 @@ services:
         volumes:
             - /var/share/elasticsearch/log:/var/log/elasticsearch
             - /var/share/elasticsearch/data:/var/share/elasticsearch/data
-            #- /var/share/elasticsearch/data:/data
         ports:
             - 9200:9200
             - 9300:9300
